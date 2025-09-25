@@ -1,0 +1,10 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    { "label": "Frontend: Build (Docker)", "type": "shell", "command": "docker compose build frontend" },
+    { "label": "Frontend: Up (Docker)",    "type": "shell", "command": "docker compose up -d frontend" },
+    { "label": "Frontend: Down (Docker)",  "type": "shell", "command": "docker compose rm -sf frontend" },
+    { "label": "Stack: Up --build",         "type": "shell", "command": "docker compose up -d --build" },
+    { "label": "Stack: Down (all)",         "type": "shell", "command": "docker compose down" }
+  ]
+}

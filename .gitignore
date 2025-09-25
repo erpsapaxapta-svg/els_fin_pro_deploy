@@ -1,27 +1,23 @@
-﻿# root
-.env
-*.local
-
-# Python / backend
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.mypy_cache/
-.pytest_cache/
-.venv/
-venv/
-
-# Node / frontend
+﻿# Node / Next
 frontend_next/node_modules/
 frontend_next/.next/
 frontend_next/.turbo/
-frontend_next/.vercel/
+frontend_next/.eslintcache
 
-# Editors
-.vscode/
-.idea/
+# Python
+backend/__pycache__/
+backend/*.pyc
+backend/.mypy_cache/
+backend/.pytest_cache/
+backend/.venv/
+.venv/
 
-# OS
-.DS_Store
-Thumbs.db
+# Env & secrets
+.env
+backend/.env
+frontend_next/.env.local
+.env.local
+
+# Docker junk
+**/dist/
+**/build/
