@@ -1,19 +1,52 @@
 ﻿name: CI
+
 on:
   push:
+    branches: [ main, development ]
   pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
 jobs:
-  build-api:
+  backend:
+    name: Backend (FastAPI) build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
-      - name: Build API
-        run: docker build -t els_api ./backend
-  build-web:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Import check
+        run: python -c "import fastapi, uvicorn"
+
+      - name: Docker build (sanity)
+        run: docker build -t els-backend:ci .
+  
+  frontend:
+    name: Frontend (Next.js/TS) build
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend_next
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
-      - name: Build Web
-        run: docker build -t els_web ./frontend_next
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend_next/package-lock.json
+      - name: Install deps
+        run: npm ci --include=dev
+      - name: Type check & build
+        run: npm run build
+      - name: Docker build (sanity)
+        run: docker build -t els-frontend:ci .
