@@ -1,0 +1,39 @@
+﻿sheet_name: "Balance Sheet"
+title: "ELS Consolidated Balance Sheet"
+
+rows:
+  - caption: "Non-Current Assets"
+  - item: "Property, plant and equipment"
+  - item: "Intangible assets"
+  - item: "Right-of-use assets"
+  - total: "Total Non-Current Assets"
+
+  - caption: "Current Assets"
+  - item: "Inventories"
+  - item: "Trade and other receivables"
+  - item: "Cash and cash equivalents"
+  - total: "Total Current Assets"
+
+  - total: "Total Assets"
+    sum_labels: ["Total Non-Current Assets", "Total Current Assets"]
+
+  - caption: "Equity"
+  - item: "Share capital"
+  - item: "Retained earnings"
+  - total: "Total Equity"
+
+  - caption: "Non-Current Liabilities"
+  - item: "Long-term borrowings"
+  - total: "Total Non-Current Liabilities"
+
+  - caption: "Current Liabilities"
+  - item: "Trade payables"
+  - item: "Accrued expenses"
+  - total: "Total Current Liabilities"
+
+  - total: "Total Liabilities"
+    sum_labels: ["Total Non-Current Liabilities", "Total Current Liabilities"]
+
+  - total: "Total Equity and Liabilities"
+    sum_labels: ["Total Equity", "Total Liabilities"]
+

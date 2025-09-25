@@ -1,0 +1,1 @@
+Model=bs, Periods=['JUN 2025', 'SEP 2025'], Company=HO

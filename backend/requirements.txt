@@ -1,0 +1,17 @@
+fastapi==0.114.2
+uvicorn[standard]==0.30.6
+gunicorn==21.2.0
+
+python-multipart==0.0.9
+pydantic==2.9.2
+pandas==2.2.2
+openpyxl==3.1.5
+
+# مفيد للأداء (JSON أسرع)
+orjson==3.10.7
+
+# لو هتقرأ متغيرات من .env (اختياري)
+python-dotenv==1.0.1
+
+# لو هتستخدم Postgres لاحقًا لفحص /ready أو تخزين (اختياري)
+# asyncpg==0.29.0

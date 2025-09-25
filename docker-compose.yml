@@ -1,0 +1,74 @@
+﻿services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: els_api
+    command: uvicorn backend.main:app --host 0.0.0.0 --port 8000
+    environment:
+      PYTHONUNBUFFERED: "1"
+      API_KEY: ${EXT_API_KEY}
+      ALLOWED_ORIGINS: '["http://localhost:3000","https://app.powerbi.com"]'
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request,sys; \
+        sys.exit(0) if urllib.request.urlopen('http://localhost:8000/api/v1/ready', timeout=2).status==200 \
+        else sys.exit(1)\""]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    ports: ["8000:8000"]
+    restart: unless-stopped
+
+    # Limits محلية
+    mem_limit: 1g          # أقصى ذاكرة
+    cpus: "1.0"            # أقصى أنوية CPU تستخدمها الخدمة
+
+    # Log rotation
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"    # كل ملف لوج 10 ميجابايت
+        max-file: "3"      # احتفظ بثلاث ملفات متداولة
+
+    # اختياري: ارفع الحد الأقصى لعدد الملفات المفتوحة
+    ulimits:
+      nofile:
+        soft: 4096
+        hard: 8192
+
+  web:
+    build:
+      context: ./frontend_next
+      dockerfile: Dockerfile
+    container_name: els_web
+    environment:
+      NODE_ENV: production
+      API_BASE: http://api:8000/api/v1
+      NEXT_PUBLIC_API_BASE: /api/proxy
+      EXT_API_KEY: ${EXT_API_KEY}   # يُستخدم داخل البروكسي فقط (Server-side)
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"http=require('http');http.get('http://localhost:3000',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))\""]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    ports: ["3000:3000"]
+    restart: unless-stopped
+
+    # Limits محلية
+    mem_limit: 512m
+    cpus: "0.5"
+
+    # Log rotation
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    ulimits:
+      nofile:
+        soft: 4096
+        hard: 8192

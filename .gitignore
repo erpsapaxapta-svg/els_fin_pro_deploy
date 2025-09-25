@@ -1,0 +1,27 @@
+﻿# root
+.env
+*.local
+
+# Python / backend
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.mypy_cache/
+.pytest_cache/
+.venv/
+venv/
+
+# Node / frontend
+frontend_next/node_modules/
+frontend_next/.next/
+frontend_next/.turbo/
+frontend_next/.vercel/
+
+# Editors
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
