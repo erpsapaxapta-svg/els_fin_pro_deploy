@@ -24,5 +24,5 @@ def get_companies():
 
 @router.get("/periods")
 def get_periods():
-    """يرجع قائمة الفترات المتاحة (كما كانت من قبل)."""
-    re
+    """يرجع قائمة الفترات المتاحة (من ملف Consolidated_TBs.xlsx)."""
+    return list_periods(INPUT_FILE)
