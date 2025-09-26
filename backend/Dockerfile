@@ -1,32 +1,24 @@
-# ---------- build stage ----------
-FROM python:3.11-slim AS build
+# ===== Base image (مثبّتة) =====
+FROM python:3.11-slim-bullseye
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+# تثبيت libpq وغيرها لو بتحتاجها (لو هتتكامل مع Postgres)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential curl && \
+    rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+# نسخ المتطلبات أولاً عشان الـlayer يتخزّن
+COPY backend/requirements.txt /app/requirements.txt
+RUN pip install --upgrade pip && pip install -r /app/requirements.txt
 
-# context is ./backend, so paths are relative to it
-COPY requirements.txt /app/requirements.txt
+# نسخ الكود
+COPY backend /app/backend
 
-RUN python -m venv /opt/venv \
- && /opt/venv/bin/pip install --upgrade pip \
- && /opt/venv/bin/pip install --no-cache-dir -r /app/requirements.txt
-
-# copy backend source (relative to ./backend)
-COPY . /app/backend
-
-# ---------- run stage (non-root) ----------
-FROM python:3.11-slim
-WORKDIR /app
-
-RUN adduser --disabled-password --gecos "" app && chown -R app:app /app
-USER app
-
-ENV PATH="/opt/venv/bin:$PATH"
-
-COPY --from=build /opt/venv /opt/venv
-COPY --from=build /app/backend /app/backend
-
+# ===== تشغيل Uvicorn في وضع إنتاج =====
 EXPOSE 8000
-
-# production server (compose can override if needed)
-CMD ["gunicorn","-k","uvicorn.workers.UvicornWorker","backend.main:app","--bind","0.0.0.0:8000","--workers","4","--timeout","60","--keep-alive","5"]
+CMD ["python", "-m", "uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
