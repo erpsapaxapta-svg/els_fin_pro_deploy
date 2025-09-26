@@ -27,6 +27,18 @@ app = FastAPI(
     redoc_url="/redoc",
     openapi_url="/openapi.json",
 )
+# ضيف الاستيراد ده مع بقية الاستيرادات في أعلى الملف
+from fastapi.routing import APIRoute
+
+# حطّ المسار التشخيصي تحت تعريف التطبيق مباشرة
+@app.get("/__routes")
+def list_routes():
+    """تشخيص: يرجّع كل المسارات المسجّلة في التطبيق."""
+    return [
+        {"path": r.path, "name": r.name, "methods": list(r.methods)}
+        for r in app.routes
+        if isinstance(r, APIRoute)
+    ]
 
 app.add_middleware(
     CORSMiddleware,
