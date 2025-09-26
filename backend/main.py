@@ -39,6 +39,30 @@ def list_routes():
         for r in app.routes
         if isinstance(r, APIRoute)
     ]
+    from fastapi.responses import JSONResponse
+from fastapi.openapi.utils import get_openapi
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
+
+# لو كان FastAPI ما سجّلش الـ docs تلقائيًا، نعملهم يدويًا:
+@app.get("/openapi.json", include_in_schema=False)
+def openapi():
+    return JSONResponse(
+        get_openapi(
+            title=APP_TITLE,
+            version=APP_VER,
+            routes=app.routes,
+            description="ELS Finance API",
+        )
+    )
+
+@app.get("/docs", include_in_schema=False)
+def swagger_docs():
+    return get_swagger_ui_html(openapi_url="/openapi.json", title="API Docs")
+
+@app.get("/redoc", include_in_schema=False)
+def redoc_docs():
+    return get_redoc_html(openapi_url="/openapi.json", title="API ReDoc")
+
 
 app.add_middleware(
     CORSMiddleware,
