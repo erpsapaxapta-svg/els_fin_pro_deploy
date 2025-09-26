@@ -23,6 +23,9 @@ app = FastAPI(
     title=APP_TITLE,
     version=APP_VER,
     description="Public API for BI tools (JSON/CSV) — versioned on /api/v1. Use X-API-KEY header or api_key query.",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
 )
 
 app.add_middleware(
